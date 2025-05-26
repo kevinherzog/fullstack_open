@@ -12,8 +12,6 @@ const Filter = ({persons, filtered, setFiltered}) => {
             setFiltered(persons)
         }else{
             setFiltered(persons.filter(perso => (perso.name).toLowerCase().includes(event.target.value)))
-            console.log(filtered);
-            
         }
         
     }
