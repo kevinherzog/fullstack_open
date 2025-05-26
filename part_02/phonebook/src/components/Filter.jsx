@@ -4,7 +4,7 @@ const Filter = ({persons, filtered, setFiltered}) => {
     const [search, setSearchTerm] = useState('')
     useEffect(() => {
         setFiltered(persons)
-    }, [setFiltered])
+    }, [setFiltered,persons])
 
     const searchPerson = (event) => {
         setSearchTerm(event.target.value)
