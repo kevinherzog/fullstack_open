@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import personService from '../services/phonebook'
 
-const PersonForm = ({persons, setPersons}) => {
+const PersonForm = ({persons, setPersons , setErMessage , setMessageType }) => {
 
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
@@ -21,8 +21,14 @@ const PersonForm = ({persons, setPersons}) => {
                     personService.update(personObject.id,personObject)
                         .then(response => {
                             setPersons(persons.map(person => person.id !== personObject.id ? person : response))
-                        setNewName('')
-                        setNewNumber('')
+                            setNewName('')
+                            setNewNumber('')
+                            setMessageType(true)
+                            setErMessage(`Updated Phonenumber of ${personObject.name}`)
+                        })
+                        .catch((event) => {
+                            setMessageType(false)
+                            setErMessage(`Information of ${personObject.name} has already been removed from server.`)
                         })
                 }
             }else{
@@ -35,6 +41,8 @@ const PersonForm = ({persons, setPersons}) => {
                 setPersons(persons.concat(response))
                 setNewName('')
                 setNewNumber('')
+                setMessageType(true)
+                setErMessage(`Added ${personObject.name}`)
             })
         }
   }

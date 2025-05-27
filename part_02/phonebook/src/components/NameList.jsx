@@ -1,10 +1,9 @@
 import personService from '../services/phonebook'
 
-const NameList = ({ persons , setPersons}) => {
+const NameList = ({ persons , setPersons }) => {
 
   const deleteNum = (id) => {
     const toDeleteName = persons.find(person => person.id == id)
-    console.log(toDeleteName.name);
     
     if(window.confirm(`Delete ${toDeleteName.name} ?`)){
       personService
