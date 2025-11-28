@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     { 
       "id": "1",
@@ -48,6 +50,58 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).end()  
     }
 })
+
+app.delete('/api/persons/:id', (request, response) =>{
+    const id = request.params.id
+    persons = persons.filter(pers => pers.id !== id)
+
+    response.status(204).end()
+} )
+
+const generateID = () => {
+  const maxID = persons.length > 0
+    ? Math.max(... persons.map(n=>Number(n.id)))
+    : 0
+    
+  return String(maxID+ 1)
+}
+
+const generateIDTwo = () => {
+  return String(Math.floor(Math.random() * 10000))
+}
+
+app.post('/api/persons', (request, response) => {
+
+  const body = request.body
+  
+  if (!body.name && !body.number) {
+    return response.status(400).json({ 
+      error: 'name and number missing' 
+    })
+  } else if (!body.name) {
+    return response.status(400).json({ 
+      error: 'name missing' 
+    })
+  } else if (!body.number) {
+    return response.status(400).json({ 
+      error: 'number missing' 
+    })
+  } else if (persons.some(p => p.name === body.name)) {
+    return response.status(400).json({ 
+      error: 'name must be unique' 
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateIDTwo(),
+  }
+
+  persons = persons.concat(person)
+  response.json(person)
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => {
