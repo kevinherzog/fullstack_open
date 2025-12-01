@@ -1,7 +1,12 @@
 const express = require('express')
+var morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+
+app.use(morgan('tiny'))
+morgan.token('body', (req) => JSON.stringify(req.body || {}))
+var logger = morgan(':method :url :status :response-time ms :body')
 
 let persons = [
     { 
@@ -70,7 +75,7 @@ const generateIDTwo = () => {
   return String(Math.floor(Math.random() * 10000))
 }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', logger, (request, response) => {
 
   const body = request.body
   
@@ -99,7 +104,7 @@ app.post('/api/persons', (request, response) => {
   }
 
   persons = persons.concat(person)
-  response.json(person)
+  response.json({ok: true})
 })
 
 
