@@ -1,6 +1,6 @@
-GET http://localhost:3001/api/persons/
+GET https://fullstack-open-hwez.onrender.com/api/persons/
 ###
-POST http://localhost:3001/api/persons/ 
+POST https://fullstack-open-hwez.onrender.com/api/persons/ 
 content-type: application/json
 
 {
