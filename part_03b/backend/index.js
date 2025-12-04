@@ -1,42 +1,48 @@
-require('dotenv').config()
 const express = require('express')
 var morgan = require('morgan')
-const mongo = require('./mongo.js')
+const mongo = require('./modules/mongo.js')
 
 const app = express()
+
 app.use(express.static('dist'))
 app.use(express.json())
-app.use(morgan('tiny'))
 
 morgan.token('body', (req) => JSON.stringify(req.body || {}))
-var logger = morgan(':method :url :status :response-time ms :body')
+const logger = morgan(':method :url :status :response-time ms :body')
+app.use(morgan('tiny'))
 
-let persons = mongo.getAllEntries()
+let persons = [] //place holder for rewriting
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
+
 app.get('/info', (request, response) => {
     const d = new Date('2022-01-22T20:27:20.000Z'); // example date
     const formatted = d.toString();
-    const msg = `<div>Phonebook has info for ${persons.length} people.</div><br /><div>${formatted}</div>`
-  response.send(msg)
+    mongo.getAllEntries()
+      .then(persons => {
+        const msg = `<div>Phonebook has info for ${persons.length} people.</div><br /><div>${formatted}</div>`
+        response.send(msg)
+      })
 })
 
 app.get('/api/persons', (request, response) => {
-  console.log(persons)
-  response.json(persons)
+  mongo.getAllEntries()
+    .then(persons => {
+      response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(pers => pers.id === id)
-
-    if (person) {    
-        response.json(person)
-    } else {    
-        response.status(404).end()  
-    }
+   mongo.findById(request.params.id)
+    .then(person =>{
+      if (person) {    
+          response.json(person)
+      } else {    
+          response.status(404).end()  
+      }
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) =>{
@@ -45,18 +51,6 @@ app.delete('/api/persons/:id', (request, response) =>{
 
     response.status(204).end()
 } )
-
-const generateID = () => {
-  const maxID = persons.length > 0
-    ? Math.max(... persons.map(n=>Number(n.id)))
-    : 0
-    
-  return String(maxID+ 1)
-}
-
-const generateIDTwo = () => {
-  return String(Math.floor(Math.random() * 10000))
-}
 
 app.post('/api/persons', logger, (request, response) => {
 
@@ -80,14 +74,10 @@ app.post('/api/persons', logger, (request, response) => {
     })
   }
 
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: generateIDTwo(),
-  }
-
-  persons = persons.concat(person)
-  response.json({ok: true})
+  mongo.createContact( {name: body.name, number: body.number })
+    .then(saved => {
+      response.json(saved)
+    })
 })
 
 
