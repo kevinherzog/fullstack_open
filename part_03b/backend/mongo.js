@@ -22,14 +22,15 @@ if (process.argv[2]) {
     })
     
     contact.save().then(result => {
-        console.log('contact saved!')
+        console.log(`added ${contact.name} number ${contact.number} to phonebook`)
         mongoose.connection.close()
     })
     
 } else {
+    console.log("phonebook:")
     Contact.find({}).then(result => {
           result.forEach(contact => {
-                console.log(contact)
+                console.log(contact.name + " " + contact.number)
   })
   mongoose.connection.close()
   
