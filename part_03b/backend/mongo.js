@@ -14,11 +14,11 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('contact', contactSchema)
 
-if (process.argv[2]) {
-    
+function saveContact(nameEntry, numberEntry) {
+
     const contact = new Contact({
-        name: process.argv[2],
-        number: process.argv[3],
+        name: nameEntry,
+        number: numberEntry,
     })
     
     contact.save().then(result => {
@@ -26,14 +26,13 @@ if (process.argv[2]) {
         mongoose.connection.close()
     })
     
-} else {
-    console.log("phonebook:")
-    Contact.find({}).then(result => {
-          result.forEach(contact => {
-                console.log(contact.name + " " + contact.number)
-  })
-  mongoose.connection.close()
-  
-})
 }
 
+function getAllEntries() {
+  return Contact.find({}).then(result => {
+    mongoose.connection.close() 
+    return result;       
+  });
+}
+
+module.exports = { getAllEntries, saveContact }
