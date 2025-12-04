@@ -3,7 +3,7 @@ import personService from '../services/phonebook'
 const NameList = ({ persons , setPersons }) => {
 
   const deleteNum = (id) => {
-    const toDeleteName = persons.find(person => person.id == id)
+    const toDeleteName = persons.find(person => person._id == id)
     
     if(window.confirm(`Delete ${toDeleteName.name} ?`)){
       personService
@@ -17,9 +17,9 @@ const NameList = ({ persons , setPersons }) => {
   return (
     <div>
       {persons.map((person) => (
-        <div key={person.id}>
+        <div key={person._id}>
           <div>{person.name} {person.number}
-          <button onClick={() => deleteNum(person.id)}>Delete</button></div>
+          <button onClick={() => deleteNum(person._id)}>Delete</button></div>
         </div>
       ))}
     </div>

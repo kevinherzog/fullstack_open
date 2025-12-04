@@ -21,10 +21,6 @@ function findById(id) {
   return Contact.findById(id)
 }
 
-function findByName(name) {
-  return Contact.findOne({ name })
-}
-
 function createContact({ name, number }) {
   const contact = new Contact({ name, number })
   return contact.save()
@@ -38,11 +34,19 @@ function countAll() {
   return Contact.countDocuments({})
 }
 
+function updateById(id, data) {
+  return Contact.findByIdAndUpdate(
+    id,
+    data,
+    { new: true, runValidators: true, context: 'query' }
+  )
+}
+
 module.exports = {
   getAllEntries,
   findById,
-  findByName,
   createContact,
   deleteById,
   countAll,
+  updateById,
 }

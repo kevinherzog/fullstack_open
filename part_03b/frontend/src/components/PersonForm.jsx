@@ -17,10 +17,10 @@ const PersonForm = ({persons, setPersons , setErMessage , setMessageType }) => {
             const oldNum = persons.find((person) => person.name === personObject.name)            
             if (oldNum.number !== personObject.number ) {
                 if (window.confirm(`${oldNum.name} is already added to phonebook, replace the old number with new one?`)) {
-                    personObject.id = oldNum.id
+                    personObject.id = oldNum._id
                     personService.update(personObject.id,personObject)
                         .then(response => {
-                            setPersons(persons.map(person => person.id !== personObject.id ? person : response))
+                            setPersons(persons.map(person => person._id !== personObject.id ? person : response))
                             setNewName('')
                             setNewNumber('')
                             setMessageType(true)
@@ -28,7 +28,7 @@ const PersonForm = ({persons, setPersons , setErMessage , setMessageType }) => {
                         })
                         .catch((event) => {
                             setMessageType(false)
-                            setErMessage(`Information of ${personObject.name} has already been removed from server.`)
+                            setErMessage(`Information of ${personObject.name} has already  been removed from server.`)
                         })
                 }
             }else{
