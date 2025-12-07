@@ -17,9 +17,36 @@ const favoritBlog = (blogs) => {
     }
 }
 
+const mostBlogs = (blogs) => {
+    if (blogs.length === 0) {
+        return null
+    } else {
+        let authorSave = ""
+        let blogSave = 0
+
+        const blogCounts = blogs.reduce((acc, blog) => {
+            acc[blog.author] = (acc[blog.author] || 0) + 1
+        return acc
+        }, {})
+
+        for (const [author, count] of Object.entries(blogCounts)) {
+            if (count > blogSave) {
+            blogSave = count
+            authorSave = author
+    }
+  }
+
+        const result = {
+            author:  authorSave,
+            blogs: blogSave
+        }
+        return result
+    }
+}
 
 module.exports = {
   dummy,
   totalLikes,
-  favoritBlog
+  favoritBlog,
+  mostBlogs
 }
