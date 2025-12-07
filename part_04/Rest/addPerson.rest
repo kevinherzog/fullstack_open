@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs/
+content-type: application/json
+
+{
+  "title": "Title of a Blog Post",
+  "author": "A very long author name to catch edge cases",
+  "url": "https://dummyurl.com/articlelink",
+  "likes": 1
+}
