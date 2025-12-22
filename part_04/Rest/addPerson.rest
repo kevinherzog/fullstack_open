@@ -5,5 +5,5 @@ content-type: application/json
   "title": "Alternative Title of a Blog Post",
   "author": "A very long author name to catch edge cases",
   "url": "https://dummyurl.com/articlelink",
-  "likes": 1
+  "likes": 3
 }
