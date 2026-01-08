@@ -56,6 +56,22 @@ test.only('post new and check if increased by one', async () => {
     assert(titles.includes('Go To Statement Considered Harmful'))
 })
 
+test.only('check if created without likes get zero', async () => {
+
+    const newBlog = {
+            title: 'This should have zero likes',
+            author: 'Edsger W. Dijkstra',
+            url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf'
+        }
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd[blogsAtEnd.length-1].likes, 0)
+})
 
 after(async () => {
   await mongoose.connection.close()
