@@ -5,6 +5,7 @@ const app = require('../app')
 const helper = require('./test_helper')
 const assert = require('node:assert')
 const Blog = require('../models/blog')
+const { title } = require('node:process')
 
 const api = supertest(app)
 
@@ -71,6 +72,30 @@ test.only('check if created without likes get zero', async () => {
 
     const blogsAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogsAtEnd[blogsAtEnd.length-1].likes, 0)
+})
+
+test.only('return 400 on no title', async () => {
+
+    const newBlog = {
+            author: 'Edsger W. Dijkstra',
+            url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf'
+        }
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+})
+
+test.only('return 400 on no url', async () => {
+
+    const newBlog = {
+            title: 'Test Title for return 400 on missing url',
+            author: 'Edsger W. Dijkstra'
+          }
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
 })
 
 after(async () => {
