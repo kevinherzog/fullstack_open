@@ -1,16 +1,18 @@
+import globals from 'globals'
+
 export default [
   {
     files: ['**/*.js'],
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'commonjs',
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+      },
     },
     linterOptions: {
       reportUnusedDisableDirectives: 'error',
-    },
-    env: {
-      node: true,
-      es2021: true,
     },
     rules: {
       eqeqeq: 'error',
@@ -21,4 +23,3 @@ export default [
     },
   },
 ]
-
