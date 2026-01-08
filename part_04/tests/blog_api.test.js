@@ -114,7 +114,29 @@ test.only('a blog can be deleted', async () => {
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
 
+test.only('update likes', async () => {
 
+    const newBlog = {
+            title: 'Go To Statement Considered Harmful',
+            author: 'Edsger W. Dijkstra',
+            url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+            likes: 5
+        }
+
+    const created = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const createdId = created.body.id
+
+    await api
+        .put(`/api/blogs/${createdId}`)
+        .send({ likes: 123 })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+})
 after(async () => {
   await mongoose.connection.close()
 })
