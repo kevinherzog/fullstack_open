@@ -40,7 +40,36 @@ describe("when there is initially one user in db", () => {
     const usernames = usersAtEnd.map((u) => u.username);
     assert(usernames.includes(newUser.username));
   });
-  describe("creating users and validating");
+
+  describe("creating users and validating", () => {
+    test.only("creation fails when username same", async () => {
+      const newUser = {
+        username: "root",
+        name: "Matti Luukkainen",
+        password: "salainen",
+      };
+      console.log(await helper.usersInDb());
+      await api.post("/api/users").send(newUser).expect(400);
+    });
+    test.only("creation fails when username short", async () => {
+      const newUser = {
+        username: "ml",
+        name: "Matti Luukkainen",
+        password: "salainen",
+      };
+
+      await api.post("/api/users").send(newUser).expect(400);
+    });
+    test.only("creation fails when password short", async () => {
+      const newUser = {
+        username: "mluukkai",
+        name: "Matti Luukkainen",
+        password: "sa",
+      };
+
+      await api.post("/api/users").send(newUser).expect(400);
+    });
+  });
 });
 
 after(async () => {
