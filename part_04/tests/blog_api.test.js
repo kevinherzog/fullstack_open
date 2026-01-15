@@ -95,6 +95,13 @@ describe("when there is initially some blogs saved", () => {
         .send(newBlog)
         .expect(400);
     });
+    test("return 401 on no token", async () => {
+      const newBlog = {
+        author: "Edsger W. Dijkstra",
+        url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      };
+      await api.post("/api/blogs").send(newBlog).expect(401);
+    });
 
     test("return 400 on no url", async () => {
       const newBlog = {
