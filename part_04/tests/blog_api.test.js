@@ -15,27 +15,27 @@ beforeEach(async () => {
 })
 
 describe('when there is initially some blogs saved', () => {
-  test.only('blogs are returned as json', async () => {
+  test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test.only('all blogs are returned', async () => {
+  test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
   })
 
-  test.only('is id, not _id', async () => {
+  test('is id, not _id', async () => {
     const response = await api.get('/api/blogs')
     response.body.forEach(blog => {
       assert.ok(blog.id)
     })
   })
   describe('addition of new blogs', () => {
-    test.only('post new and check if increased by one', async () => {
+    test('post new and check if increased by one', async () => {
 
         const newBlog = {
                 title: 'Go To Statement Considered Harmful',
@@ -57,7 +57,7 @@ describe('when there is initially some blogs saved', () => {
         assert(titles.includes('Go To Statement Considered Harmful'))
     })
 
-    test.only('check if created without likes get zero', async () => {
+    test('check if created without likes get zero', async () => {
 
         const newBlog = {
                 title: 'This should have zero likes',
@@ -74,7 +74,7 @@ describe('when there is initially some blogs saved', () => {
         assert.strictEqual(blogsAtEnd[blogsAtEnd.length-1].likes, 0)
     })
 
-    test.only('return 400 on no title', async () => {
+    test('return 400 on no title', async () => {
 
         const newBlog = {
                 author: 'Edsger W. Dijkstra',
@@ -86,7 +86,7 @@ describe('when there is initially some blogs saved', () => {
             .expect(400)
     })
 
-    test.only('return 400 on no url', async () => {
+    test('return 400 on no url', async () => {
 
         const newBlog = {
                 title: 'Test Title for return 400 on missing url',
@@ -99,7 +99,7 @@ describe('when there is initially some blogs saved', () => {
     })
   })
   describe('manipulation of blogs', () => {
-    test.only('a blog can be deleted', async () => {
+    test('a blog can be deleted', async () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
 
@@ -115,7 +115,7 @@ describe('when there is initially some blogs saved', () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
     })
 
-    test.only('update likes', async () => {
+    test('update likes', async () => {
 
         const newBlog = {
                 title: 'Go To Statement Considered Harmful',
