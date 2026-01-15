@@ -11,7 +11,7 @@ const favoritBlog = (blogs) => {
     return null;
   } else {
     const result = blogs.reduce((max, blog) =>
-      blog.likes > max.likes ? blog : max,
+      blog.likes > max.likes ? blog : max
     );
     return result;
   }
