@@ -13,9 +13,17 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === "JsonWebTokenError") {
     return response.status(401).json({ error: "token invalid" });
   }
-
-  console.error(error);
-  return response.status(500).json({ error: "internal server error" });
+  next();
 };
 
-module.exports = errorHandler;
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.startsWith("Bearer ")) {
+    request.token = authorization.replace("Bearer ", "");
+  } else {
+    request.token = null;
+  }
+  next();
+};
+
+module.exports = { errorHandler, tokenExtractor };
