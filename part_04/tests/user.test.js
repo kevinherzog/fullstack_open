@@ -19,7 +19,7 @@ describe("when there is initially one user in db", () => {
     await user.save();
   });
 
-  test.only("creation succeeds with a fresh username", async () => {
+  test("creation succeeds with a fresh username", async () => {
     const usersAtStart = await helper.usersInDb();
 
     const newUser = {
@@ -42,7 +42,7 @@ describe("when there is initially one user in db", () => {
   });
 
   describe("creating users and validating", () => {
-    test.only("creation fails when username same", async () => {
+    test("creation fails when username same", async () => {
       const newUser = {
         username: "root",
         name: "Matti Luukkainen",
@@ -51,7 +51,7 @@ describe("when there is initially one user in db", () => {
       console.log(await helper.usersInDb());
       await api.post("/api/users").send(newUser).expect(400);
     });
-    test.only("creation fails when username short", async () => {
+    test("creation fails when username short", async () => {
       const newUser = {
         username: "ml",
         name: "Matti Luukkainen",
@@ -60,7 +60,7 @@ describe("when there is initially one user in db", () => {
 
       await api.post("/api/users").send(newUser).expect(400);
     });
-    test.only("creation fails when password short", async () => {
+    test("creation fails when password short", async () => {
       const newUser = {
         username: "mluukkai",
         name: "Matti Luukkainen",

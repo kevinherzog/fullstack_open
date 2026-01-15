@@ -9,8 +9,18 @@ const { title } = require("node:process");
 
 const api = supertest(app);
 
+let token = null;
+
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await helper.createTestUser();
+
+  const loginResponse = await api
+    .post("/api/login")
+    .send({ username: "root", password: "sekret" })
+    .expect(200);
+
+  token = loginResponse.body.token;
   await Blog.insertMany(helper.initialBlogs);
 });
 
@@ -45,6 +55,7 @@ describe("when there is initially some blogs saved", () => {
 
       await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -64,6 +75,7 @@ describe("when there is initially some blogs saved", () => {
       };
       await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -77,7 +89,11 @@ describe("when there is initially some blogs saved", () => {
         author: "Edsger W. Dijkstra",
         url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
       };
-      await api.post("/api/blogs").send(newBlog).expect(400);
+      await api
+        .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
+        .send(newBlog)
+        .expect(400);
     });
 
     test("return 400 on no url", async () => {
@@ -85,22 +101,41 @@ describe("when there is initially some blogs saved", () => {
         title: "Test Title for return 400 on missing url",
         author: "Edsger W. Dijkstra",
       };
-      await api.post("/api/blogs").send(newBlog).expect(400);
+      await api
+        .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
+        .send(newBlog)
+        .expect(400);
     });
   });
   describe("manipulation of blogs", () => {
     test("a blog can be deleted", async () => {
-      const blogsAtStart = await helper.blogsInDb();
-      const blogToDelete = blogsAtStart[0];
+      const newBlog = {
+        title: "This should have zero likes",
+        author: "Edsger W. Dijkstra",
+        url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      };
+      await api
+        .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToDelete = blogsAtStart[blogsAtStart.length - 1];
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(204);
 
       const blogsAtEnd = await helper.blogsInDb();
 
       const ids = blogsAtEnd.map((n) => n.id);
       assert(!ids.includes(blogToDelete.id));
 
-      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1);
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+      //not minus one because of workaround since intial blogs does not pass a user that we can use
     });
 
     test("update likes", async () => {
@@ -113,6 +148,7 @@ describe("when there is initially some blogs saved", () => {
 
       const created = await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -121,6 +157,7 @@ describe("when there is initially some blogs saved", () => {
 
       await api
         .put(`/api/blogs/${createdId}`)
+        .set("Authorization", `Bearer ${token}`)
         .send({ likes: 123 })
         .expect(200)
         .expect("Content-Type", /application\/json/);
